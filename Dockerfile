@@ -1,18 +1,41 @@
-FROM richarvey/nginx-php-fpm:3.1.6
+FROM php:8.5-apache
+
+WORKDIR /var/www/html
+
+RUN apt-get update && apt-get install -y \
+    libpq-dev \
+    libzip-dev \
+    unzip \
+    git \
+    && docker-php-ext-install \
+    pdo_pgsql \
+    pgsql \
+    zip \
+    && a2enmod rewrite \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 COPY . .
 
-ENV WEBROOT /var/www/html/public
-ENV PHP_ERRORS_STDERR 1
-ENV RUN_SCRIPTS 1
-ENV REAL_IP_HEADER 1
+RUN composer install \
+    --no-dev \
+    --optimize-autoloader \
+    --no-interaction
 
-ENV APP_ENV production
-ENV APP_DEBUG false
-ENV LOG_CHANNEL stderr
+RUN chown -R www-data:www-data /var/www/html/storage \
+    /var/www/html/bootstrap/cache
 
-ENV COMPOSER_ALLOW_SUPERUSER 1
+RUN a2dismod mpm_event && a2enmod mpm_prefork
 
-RUN composer install --no-dev --optimize-autoloader --no-interaction
+ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
 
-CMD ["/start.sh"]
+RUN sed -ri \
+    -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' \
+    /etc/apache2/sites-available/*.conf \
+    /etc/apache2/apache2.conf \
+    /etc/apache2/conf-available/*.conf
+
+EXPOSE 80
+
+CMD ["apache2-foreground"]

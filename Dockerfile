@@ -23,12 +23,13 @@ RUN composer install \
     --optimize-autoloader \
     --no-interaction
 
+# Publicar assets de Swagger UI
+RUN php artisan vendor:publish \
+    --provider "L5Swagger\L5SwaggerServiceProvider" \
+    --tag="l5-swagger-assets"
+
 # Generar documentación Swagger
-RUN php artisan l5-swagger:generate \
-    && echo "===== SWAGGER GENERADO =====" \
-    && ls -lah storage/api-docs \
-    && echo "===== CONTENIDO DE api-docs.json =====" \
-    && head -c 500 storage/api-docs/api-docs.json
+RUN php artisan l5-swagger:generate
 
 RUN chown -R www-data:www-data /var/www/html/storage \
     /var/www/html/bootstrap/cache

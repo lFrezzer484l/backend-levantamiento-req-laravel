@@ -24,7 +24,11 @@ RUN composer install \
     --no-interaction
 
 # Generar documentación Swagger
-RUN php artisan l5-swagger:generate
+RUN php artisan l5-swagger:generate \
+    && echo "===== SWAGGER GENERADO =====" \
+    && ls -lah storage/api-docs \
+    && echo "===== CONTENIDO DE api-docs.json =====" \
+    && head -c 500 storage/api-docs/api-docs.json
 
 RUN chown -R www-data:www-data /var/www/html/storage \
     /var/www/html/bootstrap/cache

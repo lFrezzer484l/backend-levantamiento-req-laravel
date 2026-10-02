@@ -1,0 +1,134 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Requirements API",
+        "description": "API para la gestión de requerimientos.",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://127.0.0.1:4000",
+            "description": "Servidor local"
+        },
+        {
+            "url": "https://backendlevantamiento-req-laravel.onrender.com",
+            "description": "Servidor de producción"
+        }
+    ],
+    "paths": {
+        "/api/requirements": {
+            "get": {
+                "tags": [
+                    "Requirements"
+                ],
+                "summary": "Obtener todos los requerimientos",
+                "description": "Obtiene todos los requerimientos registrados.",
+                "operationId": "4fb6df5e31526883dae543310db96883",
+                "responses": {
+                    "200": {
+                        "description": "Lista de requerimientos"
+                    }
+                }
+            }
+        },
+        "/api/requirements/create": {
+            "post": {
+                "tags": [
+                    "Requirements"
+                ],
+                "summary": "Crear un requerimiento",
+                "description": "Registra un nuevo requerimiento.",
+                "operationId": "70a2bcc8702f1155ccaf01b01f0bf738",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "requester",
+                                    "email",
+                                    "description",
+                                    "requirement_type",
+                                    "priority",
+                                    "titulo"
+                                ],
+                                "properties": {
+                                    "requester": {
+                                        "type": "string",
+                                        "example": "Juan Perez"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "juan@gmail.com"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Necesito un sistema de inventario"
+                                    },
+                                    "requirement_type": {
+                                        "type": "string",
+                                        "example": "Software"
+                                    },
+                                    "priority": {
+                                        "type": "string",
+                                        "example": "Alta"
+                                    },
+                                    "titulo": {
+                                        "type": "string",
+                                        "example": "Sistema inventario"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Requerimiento creado correctamente"
+                    },
+                    "422": {
+                        "description": "Datos inválidos"
+                    }
+                }
+            }
+        },
+        "/api/requirements/{id}": {
+            "get": {
+                "tags": [
+                    "Requirements"
+                ],
+                "summary": "Obtener un requerimiento por ID",
+                "description": "Obtiene un requerimiento específico mediante su ID.",
+                "operationId": "1f458043c09de8427d0ffa49b33d345a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del requerimiento",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Requerimiento encontrado"
+                    },
+                    "404": {
+                        "description": "Requerimiento no encontrado"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Requirements",
+            "description": "Requirements"
+        }
+    ]
+}

@@ -23,6 +23,9 @@ RUN composer install \
     --optimize-autoloader \
     --no-interaction
 
+# Generar documentación Swagger
+RUN php artisan l5-swagger:generate
+
 RUN chown -R www-data:www-data /var/www/html/storage \
     /var/www/html/bootstrap/cache
 
